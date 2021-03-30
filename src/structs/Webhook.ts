@@ -37,7 +37,7 @@ export class Webhook {
 
   private _parseRequest (req, res): Promise<WebhookPayload|false> {
     return new Promise(resolve => {
-      if (this.authorization && this.authorization.includes(req.headers.authorization)) return res.status(403).json({ error: 'Unauthorized' })
+      if (this.authorization && !this.authorization.includes(req.headers.authorization)) return res.status(403).json({ error: 'Unauthorized' })
       // parse json
 
       if (req.body) return resolve(this._formatIncoming(req.body))

@@ -28,7 +28,7 @@ export class Webhook {
    * Create a new webhook client instance
    * @param authorization Webhook authorization to verify requests
    */
-  constructor (private authorization?: string) {}
+  constructor (private authorization?: array) {}
 
   private _formatIncoming (body): WebhookPayload {
     if (body?.query?.length > 0) body.query = qs.parse(body.query.substr(1))
@@ -37,7 +37,7 @@ export class Webhook {
 
   private _parseRequest (req, res): Promise<WebhookPayload|false> {
     return new Promise(resolve => {
-      if (this.authorization && req.headers.authorization !== this.authorization) return res.status(403).json({ error: 'Unauthorized' })
+      if (this.authorization && this.authorization.includes(req.headers.authorization)) return res.status(403).json({ error: 'Unauthorized' })
       // parse json
 
       if (req.body) return resolve(this._formatIncoming(req.body))
